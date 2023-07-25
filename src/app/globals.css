@@ -16,7 +16,8 @@
   }
 }
 
-body {
+.bg {
+  height: 100vh;
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
@@ -24,4 +25,9 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+}
+
+.header {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
 }
