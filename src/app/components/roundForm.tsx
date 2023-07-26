@@ -33,7 +33,7 @@ const RoundForm = ({formik}: {formik: FormikProps<{
          <TextField
              id="numberOfTurns"
              name="numberOfTurns"
-             label="Number of Turns"
+             label="Number of Turns (1-6 is ideal)"
              value={formik.values.numberOfTurns}
              onChange={formik.handleChange}
              onBlur={formik.handleBlur}
