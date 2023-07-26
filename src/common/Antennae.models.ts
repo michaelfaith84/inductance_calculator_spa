@@ -191,12 +191,12 @@ export class SquareAntenna extends Antenna implements SquareAntennaInterface, An
     }
 
     static calculateDiameter(trackThickness: number, trackWidth: number): number {
-        return 2 * (trackThickness / trackWidth) / Math.PI
+        return 2 * (trackThickness + trackWidth) / Math.PI
     }
 
     calculateSingleAxisX(dimension: NumberField,
                                 ): number {
-        return dimension.value * Math.log(2.0 * this._averageWidth.value * this._averageHeight.value / (this._diameter.value * (this._averageWidth.value + Math.sqrt(Math.pow(this._averageWidth.value, 2.0) + Math.pow(this._averageHeight.value, 2.0)))));
+        return dimension.value * Math.log(2.0 * this._averageWidth.value * this._averageHeight.value / (this._diameter.value * (dimension.value + Math.sqrt(Math.pow(this._averageWidth.value, 2.0) + Math.pow(this._averageHeight.value, 2.0)))));
     }
 
     calculateX3(): number {

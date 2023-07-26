@@ -52,7 +52,7 @@ export default function Round() {
         <Card variant={"outlined"}>
             <form onSubmit={formik.handleSubmit}>
                 <CardContent>
-                    <Stack spacing={2}>
+                    <Stack spacing={1.5}>
                         {antenna === null ?
                             <RoundForm formik={formik} />
                         : <AntennaSummary antenna={antenna} />}

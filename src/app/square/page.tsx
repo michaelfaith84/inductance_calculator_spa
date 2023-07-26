@@ -73,7 +73,7 @@ export default function Square() {
         <Card variant={"outlined"}>
             <form onSubmit={formik.handleSubmit}>
                 <CardContent>
-                    <Stack spacing={2}>
+                    <Stack spacing={1.5}>
                         {antenna === null ?
                             <SquareForm formik={formik} />
                             : <AntennaSummary antenna={antenna} />}

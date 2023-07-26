@@ -36,7 +36,7 @@ const SquareForm = ({formik}: {formik: FormikProps<{
          <TextField
              id="trackThickness"
              name="trackThickness"
-             label="Track Thickness"
+             label="Track Thickness (0.03556mm = 1oz/ft^2)"
              value={formik.values.trackThickness}
              onChange={formik.handleChange}
              onBlur={formik.handleBlur}
@@ -46,7 +46,7 @@ const SquareForm = ({formik}: {formik: FormikProps<{
          <TextField
              id="trackWidth"
              name="trackWidth"
-             label="Track Widgth"
+             label="Track Width (0.254mm = 10mils)"
              value={formik.values.trackWidth}
              onChange={formik.handleChange}
              onBlur={formik.handleBlur}
@@ -56,17 +56,18 @@ const SquareForm = ({formik}: {formik: FormikProps<{
          <TextField
              id="trackSpacing"
              name="trackSpacing"
-             label="Track Spacing"
+             label="Track Spacing (0.254mm = 10mils)"
              value={formik.values.trackSpacing}
              onChange={formik.handleChange}
              onBlur={formik.handleBlur}
              error={formik.touched.trackSpacing && Boolean(formik.errors.trackSpacing)}
              helperText={formik.touched.trackSpacing && formik.errors.trackSpacing}
-             variant="outlined" />
+             variant="outlined"
+         />
          <TextField
              id="numberOfTurns"
              name="numberOfTurns"
-             label="Number of Turns"
+             label="Number of Turns (1-6 is ideal)"
              value={formik.values.numberOfTurns}
              onChange={formik.handleChange}
              onBlur={formik.handleBlur}
