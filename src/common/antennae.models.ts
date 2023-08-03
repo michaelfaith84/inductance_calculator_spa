@@ -15,7 +15,7 @@ abstract class Antenna implements CommonAntennaInterface {
     _numberOfTurns: NumberField;
     _type: string;
     _inductance: NumberField;
-    _fields: (StringField | NumberField | DisplayField)[];
+    _fields: (StringField | DisplayField)[];
 
     constructor(type: string,
                 averageWidth: (number),
@@ -91,7 +91,7 @@ abstract class Antenna implements CommonAntennaInterface {
         })
     }
 
-    get fields(): (StringField | NumberField | DisplayField)[] {
+    get fields(): (StringField | DisplayField)[] {
         return this._fields;
     }
 }

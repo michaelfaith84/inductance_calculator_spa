@@ -29,7 +29,7 @@ export interface CommonAntennaInterface {
     _diameter: NumberField
     _numberOfTurns: NumberField
     _inductance: NumberField
-    _fields: (NumberField | StringField | DisplayField)[]
+    _fields: (StringField | DisplayField)[]
 }
 
 export interface SquareAntennaInterface {
