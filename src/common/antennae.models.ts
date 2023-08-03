@@ -1,10 +1,11 @@
 import {
     AntennaMethods,
-    CommonAntennaInterface,
+    CommonAntennaInterface, DisplayField,
     NumberField,
     SquareAntennaInterface,
     StringField
-} from "@/common/Antennae.types";
+} from "@/common/antennae.types";
+import Decimal from "decimal.js";
 
 const DECIMAL_PLACES = 3;
 
@@ -14,34 +15,32 @@ abstract class Antenna implements CommonAntennaInterface {
     _numberOfTurns: NumberField;
     _type: string;
     _inductance: NumberField;
-    _fields: (StringField | NumberField)[];
+    _fields: (StringField | NumberField | DisplayField)[];
 
     constructor(type: string,
-                averageWidth: number,
+                averageWidth: (number),
                 diameter: number,
                 numberOfTurns: number) {
         this._type = type;
         this._averageWidth = {
             key: "s",
             verbose: "Average Width",
-            value: averageWidth
+            value: new Decimal(averageWidth)
         };
         this._diameter = {
             key: "d",
             verbose: "Diameter",
-            value: diameter
+            value: new Decimal(diameter)
         };
         this._numberOfTurns = {
             key: "Na",
             verbose: "Number of Turns",
-            value: numberOfTurns
+            value: new Decimal(numberOfTurns)
         };
         this._inductance = this.initInductance();
-        this._fields = [
-            this._averageWidth,
+        this._fields = this.convertField([this._averageWidth,
             this._diameter,
-            this._numberOfTurns
-        ]
+            this._numberOfTurns])
     }
 
     get type(): string {
@@ -52,7 +51,7 @@ abstract class Antenna implements CommonAntennaInterface {
         return {
             key: "La",
             verbose: "Inductance",
-            value: 0
+            value: new Decimal(0)
         }
     }
 
@@ -61,16 +60,16 @@ abstract class Antenna implements CommonAntennaInterface {
         const PREFIX_ARRAY = ["f", "p", "n", "µ", "m", "", "k", "M", "G", "T"];
         let inductance = this._inductance.value;
 
-        if (inductance == 0) {
+        if (inductance == new Decimal(0)) {
             return "0 fH";
         } else {
-            const log10 = Math.log10(Math.abs(inductance));
-            const count = Math.floor(log10 / 3.0);
-            const index = count + 5;
-            inductance /= Math.pow(10.0, count * 3);
-            return index >= 0 && index < PREFIX_ARRAY.length ?
-                `${inductance.toFixed(DECIMAL_PLACES)} ${PREFIX_ARRAY[index]}H` :
-                inductance.toFixed(DECIMAL_PLACES) + ` fe${count * 3}H`;
+            const log10 = Decimal.log10(Decimal.abs(inductance));
+            const count = Decimal.floor(log10.div(3));
+            const index = count.add(5);
+            inductance = inductance.div(Decimal.pow(10, new Decimal(count.mul(3))));
+            return index.gte(0)  && index.lt(PREFIX_ARRAY.length) ?
+                `${inductance.toFixed(DECIMAL_PLACES)} ${PREFIX_ARRAY[index.toNumber()]}H` :
+                inductance.toFixed(DECIMAL_PLACES) + ` fe${count.mul(3)}H`;
         }
     }
 
@@ -84,7 +83,15 @@ abstract class Antenna implements CommonAntennaInterface {
         const number = parseInt(inductance.substring(0, inductance.length -2).split("\\.")[0]);
         return (units === "nH" && number >= 300) || (units === "µH" && number <= 3)
     }
-    get fields(): (StringField | NumberField)[] {
+
+    protected convertField(fields: NumberField[]) {
+        return fields.map(field=> {
+            return {...field,
+                value: field.value.toNumber()}
+        })
+    }
+
+    get fields(): (StringField | NumberField | DisplayField)[] {
         return this._fields;
     }
 }
@@ -106,10 +113,7 @@ export class RoundAntenna extends Antenna implements AntennaMethods {
         return {
             key: "La",
             verbose: "Inductance",
-            value:
-                24.6
-                * Math
-                    .pow(this._numberOfTurns.value, 2.0) * (this._diameter.value / 10.0) / (1.0 + 2.75 * (this._averageWidth.value / 10.0 / (this._diameter.value / 10.0))) * 1.0E-9
+            value: this._numberOfTurns.value.pow(2).mul(this._diameter.value.div(10)).div((this._averageWidth.value.div(10).div(this._diameter.value.div(10))).mul(2.75).add(1)).mul(24.6).mul(1.0E-9),
         };
     }
 }
@@ -129,20 +133,24 @@ export class SquareAntenna extends Antenna implements SquareAntennaInterface, An
                 trackSpacing: number,
                 numberOfTurns: number) {
         super("square",
-            SquareAntenna.calculateAverage(width, numberOfTurns, trackSpacing, trackWidth),
-            SquareAntenna.calculateDiameter(trackThickness, trackWidth),
+            SquareAntenna.calculateAverage(width,
+                numberOfTurns,
+                trackSpacing,
+                trackWidth).toNumber(),
+            SquareAntenna.calculateDiameter(new Decimal(trackThickness), new Decimal(trackWidth)).toNumber(),
             numberOfTurns);
         this._width = {
             key: "a0",
             verbose: "Width",
-            value: width
+            value: new Decimal(width)
         }
         this._height = {
             key: "b0",
             verbose: "Height",
-            value: height
+            value: new Decimal(height)
         }
-        this._fields.splice(this._fields.indexOf(this._averageWidth), 1)
+        this._fields.splice(this._fields.indexOf({...this._averageWidth,
+            value: this._averageWidth.value.toNumber()}), 1)
         this._averageWidth = {
             ...this._averageWidth,
             key: "Aavg"
@@ -150,32 +158,35 @@ export class SquareAntenna extends Antenna implements SquareAntennaInterface, An
         this._averageHeight = {
             key: "Bavg",
             verbose: "Average Height",
-            value: SquareAntenna.calculateAverage(height, numberOfTurns, trackSpacing, trackWidth)
+            value: SquareAntenna.calculateAverage(height,
+                numberOfTurns,
+                trackSpacing,
+                trackWidth)
         }
         this._trackWidth = {
             key: "w",
             verbose: "Track Width",
-            value: trackWidth
+            value: new Decimal(trackWidth)
         }
         this._trackThickness = {
             key: "t",
             verbose: "Track Thickness",
-            value: trackThickness
+            value: new Decimal(trackThickness)
         }
         this._trackSpacing = {
             key: "g",
             verbose: "Track Spacing",
-            value: trackSpacing
+            value: new Decimal(trackSpacing)
         }
         this._inductance = this.calculateInductance();
         this._fields.push(
-            this._height,
+            ...this.convertField([this._height,
             this._width,
             this._averageHeight,
             this._averageWidth,
             this._trackThickness,
             this._trackWidth,
-            this._trackSpacing,
+            this._trackSpacing]),
             {
             ...this._inductance,
             value: this.inductance
@@ -186,33 +197,38 @@ export class SquareAntenna extends Antenna implements SquareAntennaInterface, An
     static calculateAverage(value: number,
                             numberOfTurns: number,
                             trackSpacing: number,
-                            trackWidth: number): number {
-        return value - numberOfTurns * (trackSpacing + trackWidth);
+                            trackWidth: number): Decimal {
+        return new Decimal(value).minus(new Decimal(numberOfTurns).mul(new Decimal(trackSpacing).add(new Decimal(trackWidth))));
     }
 
-    static calculateDiameter(trackThickness: number, trackWidth: number): number {
-        return 2 * (trackThickness + trackWidth) / Math.PI
+    static calculateDiameter(trackThickness: Decimal, trackWidth: Decimal): Decimal {
+        return (trackThickness.add(trackWidth)).div(new Decimal(Math.PI)).mul(2)
     }
 
     calculateSingleAxisX(dimension: NumberField,
-                                ): number {
-        return dimension.value * Math.log(2.0 * this._averageWidth.value * this._averageHeight.value / (this._diameter.value * (dimension.value + Math.sqrt(Math.pow(this._averageWidth.value, 2.0) + Math.pow(this._averageHeight.value, 2.0)))));
+                                ): Decimal {
+        const widthHeightProduct = this._averageHeight.value.mul(this._averageWidth.value).mul(2)
+        const height = this._averageHeight.value.pow(2)
+        const width = this._averageWidth.value.pow(2)
+        const innerNest = this._diameter.value.mul(dimension.value.add(Decimal.sqrt(height.add(width))))
+        const log = Decimal.ln(widthHeightProduct.div(innerNest));
+        return dimension.value.mul(log);
     }
 
-    calculateX3(): number {
-        return 2.0 * (this._averageWidth.value + this._averageHeight.value - Math.sqrt(Math.pow(this._averageWidth.value, 2.0) + Math.pow(this._averageHeight.value, 2.0)));
+    calculateX3(): Decimal {
+        return (this._averageWidth.value.add(this._averageHeight.value).minus(Decimal.sqrt(Decimal.pow(this._averageWidth.value, new Decimal(2)).add(Decimal.pow(this._averageHeight.value, new Decimal(2)))))).mul(2);
     }
 
-    calculateX4(): number {
-        return  (this._averageWidth.value + this._averageHeight.value) / 4.0;
+    calculateX4(): Decimal {
+        return  (this._averageWidth.value.add(this._averageHeight.value)).div(4);
     }
 
     calculateInductance(): NumberField {
-        const u0 = 1.256637062E-9;
+        const u0 = new Decimal(1.256637062E-9);
         return {
             key: "La",
             verbose: "Inductance",
-            value: u0 / Math.PI * (this.calculateSingleAxisX(this._width) + this.calculateSingleAxisX(this._height) - this.calculateX3() + this.calculateX4()) * Math.pow(this._numberOfTurns.value, 1.8)
+            value: u0.div(new Decimal(Math.PI)).mul(this.calculateSingleAxisX(this._width).add(this.calculateSingleAxisX(this._height)).minus(this.calculateX3()).add(this.calculateX4())).mul(Decimal.pow(this._numberOfTurns.value, 1.8))
         }
     }
 }

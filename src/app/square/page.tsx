@@ -1,5 +1,5 @@
 'use client';
-import {SquareAntenna} from "@/common/Antennae.models";
+import {SquareAntenna} from "@/common/antennae.models";
 import {Button, Card, CardActions, CardContent, Divider, Stack} from "@mui/material";
 import AntennaSummary from "@/app/components/antennaSummary";
 import {SyntheticEvent, useState} from "react";

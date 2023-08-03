@@ -1,5 +1,5 @@
 import React from 'react';
-import {RoundAntenna, SquareAntenna} from "@/common/Antennae.models";
+import {RoundAntenna, SquareAntenna} from "@/common/antennae.models";
 import Grid2 from "@mui/material/Unstable_Grid2";
 
 const AntennaSummary = ({antenna}: {antenna: (RoundAntenna | SquareAntenna | null)}) => {

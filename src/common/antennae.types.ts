@@ -1,3 +1,5 @@
+import Decimal from "decimal.js";
+
 export interface AntennaMethods {
     type: string;
     inductance: string;
@@ -12,6 +14,12 @@ export interface StringField {
 export interface NumberField {
     key: string,
     verbose: string,
+    value: (Decimal)
+}
+
+export interface DisplayField {
+    key: string,
+    verbose: string,
     value: number
 }
 
@@ -21,7 +29,7 @@ export interface CommonAntennaInterface {
     _diameter: NumberField
     _numberOfTurns: NumberField
     _inductance: NumberField
-    _fields: (NumberField | StringField)[]
+    _fields: (NumberField | StringField | DisplayField)[]
 }
 
 export interface SquareAntennaInterface {

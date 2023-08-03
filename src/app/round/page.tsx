@@ -1,5 +1,5 @@
 'use client';
-import { RoundAntenna } from "@/common/Antennae.models";
+import { RoundAntenna } from "@/common/antennae.models";
 import RoundForm from "@/app/components/roundForm";
 import AntennaSummary from "@/app/components/antennaSummary";
 import {Stack, Card, CardContent, CardActions, Button, Divider} from "@mui/material";
