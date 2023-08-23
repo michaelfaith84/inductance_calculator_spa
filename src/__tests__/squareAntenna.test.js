@@ -1,4 +1,4 @@
-import {SquareAntenna} from "../common/antennae.models";
+import SquareAntenna from "../common/squareAntenna.model";
 import {expect, test} from '@jest/globals';
 import Decimal from "decimal.js";
 

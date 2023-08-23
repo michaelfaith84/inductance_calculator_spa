@@ -1,10 +1,11 @@
 'use client';
-import {SquareAntenna} from "@/common/antennae.models";
 import {Button, Card, CardActions, CardContent, Divider, Stack} from "@mui/material";
-import AntennaSummary from "@/app/components/antennaSummary";
 import {SyntheticEvent, useState} from "react";
 import * as yup from "yup";
 import {useFormik} from "formik";
+
+import SquareAntenna from "@/common/squareAntenna.model";
+import AntennaSummary from "@/app/components/antennaSummary";
 import SquareForm from "@/app/components/squareForm";
 
 export default function Square() {
@@ -84,7 +85,7 @@ export default function Square() {
                     {antenna === null ?
                         <Button variant={"outlined"} type={"submit"} fullWidth>Calculate</Button>
                         : ""}
-                    {antenna !== null ?
+                    {antenna !== null || formik.initialValues !== formik.values ?
                         <Button variant={"outlined"} onClick={handleReset} fullWidth>Reset</Button>
                         : ""}
                 </CardActions>

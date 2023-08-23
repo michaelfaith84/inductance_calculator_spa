@@ -1,5 +1,5 @@
 'use client';
-import { RoundAntenna } from "@/common/antennae.models";
+import RoundAntenna from "@/common/roundAntenna.model";
 import RoundForm from "@/app/components/roundForm";
 import AntennaSummary from "@/app/components/antennaSummary";
 import {Stack, Card, CardContent, CardActions, Button, Divider} from "@mui/material";
@@ -63,7 +63,7 @@ export default function Round() {
                     {antenna === null ?
                         <Button variant={"outlined"} type={"submit"} fullWidth>Calculate</Button>
                     : ""}
-                    {antenna !== null ?
+                    {antenna !== null || formik.initialValues !== formik.values ?
                         <Button variant={"outlined"} onClick={handleReset} fullWidth>Reset</Button>
                     : ""}
                 </CardActions>
