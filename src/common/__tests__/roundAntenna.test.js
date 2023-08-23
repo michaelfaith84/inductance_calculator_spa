@@ -1,4 +1,4 @@
-import RoundAntenna from "../common/roundAntenna.model";
+import RoundAntenna from "../roundAntenna.model";
 import {expect, test} from '@jest/globals';
 
 test('Round Antenna Model Test', ()=>{
