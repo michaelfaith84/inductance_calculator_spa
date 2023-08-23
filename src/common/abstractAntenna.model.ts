@@ -1,8 +1,6 @@
 import {
-    AntennaMethods,
     CommonAntennaInterface, DisplayField,
     NumberField,
-    SquareAntennaInterface,
     StringField
 } from "@/common/antennae";
 import Decimal from "decimal.js";
