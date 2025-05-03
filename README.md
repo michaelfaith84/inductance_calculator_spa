@@ -1,7 +1,7 @@
 # Inductance Calculator
 
 ---
-### A tool for designing NFC antennae
+### A tool for designing RFID antennas
 
 ---
 
